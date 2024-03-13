@@ -11,29 +11,30 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { ID } from 'src/common/types/type';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
-  }
-
   @Get()
   findAll() {
     return this.userService.findAll();
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
+  // @Patch(':id')
+  // update(@Param('id') id: ID, @Body() updateUserDto: UpdateUserDto) {
+  //   return this.userService.update(+id, updateUserDto);
+  // }
+
+  @Get(':id')
+  findById(@Param('id') id: ID) {
+    return this.userService.findOneById(+id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: ID) {
     return this.userService.remove(+id);
   }
 }

@@ -4,3 +4,8 @@ export interface ILoginData {
   user: UserEntity;
   token: string;
 }
+
+export interface IRegister {
+  user: UserEntity;
+  token: string;
+}

@@ -1,21 +1,25 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
 import { ID } from 'src/common/types/type';
 import { UserNotFoundException } from './exception/user.exception';
 import { ResData } from 'src/lib/resData';
+import { RegisterDto } from '../auth/dto/auth.dto';
 
 @Injectable()
 export class UserService {
   constructor(private readonly repository: UserRepository) {}
 
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: RegisterDto) {
+    const user = await this.repository.create(createUserDto);
+
+    return new ResData('Created', HttpStatus.CREATED, user);
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const users = await this.repository.findAll();
+    return new ResData('success', HttpStatus.OK, users);
   }
 
   async findOneById(id: ID) {
@@ -41,11 +45,12 @@ export class UserService {
     return resData;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
+  // update(id: ID, updateUserDto: UpdateUserDto) {
+    
+  //   return ;
+  // }
 
-  remove(id: number) {
+  remove(id: ID) {
     return `This action removes a #${id} user`;
   }
 }

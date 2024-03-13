@@ -15,9 +15,9 @@ import { TransactionEntity } from './modules/transaction/entities/transaction.en
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
-      port: 5433,
+      port: 5432,
       username: 'postgres',
-      password: 'justforward',
+      password: '2004',
       database: 'product_typeorm',
       entities: [UserEntity, CategoryEntity, ProductEntity, TransactionEntity],
       synchronize: true,
