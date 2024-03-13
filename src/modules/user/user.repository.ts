@@ -14,7 +14,7 @@ export class UserRepository {
     return await this.repository.save(dto);
   }
 
-  async update(id: ID, dto: UpdateUserDto): Promise<UserEntity> {
+  async update(dto: UpdateUserDto): Promise<UserEntity> {
     return await this.repository.save(dto);
   }
 
@@ -28,5 +28,9 @@ export class UserRepository {
 
   async findOneByLogin(login: string): Promise<UserEntity | undefined> {
     return await this.repository.findOneBy({ login });
+  }
+
+  async remove(dto: UserEntity): Promise<UserEntity> {
+    return await this.repository.remove(dto);
   }
 }

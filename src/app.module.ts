@@ -9,9 +9,22 @@ import { UserEntity } from './modules/user/entities/user.entity';
 import { CategoryEntity } from './modules/category/entities/category.entity';
 import { ProductEntity } from './modules/product/entities/product.entity';
 import { TransactionEntity } from './modules/transaction/entities/transaction.entity';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => {
+        const store = await redisStore({
+          socket: { host: '127.0.0.1', port: 6379 },
+          ttl: 10 * 1000,
+        });
+
+        return { store };
+      },
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
