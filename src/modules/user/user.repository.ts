@@ -3,7 +3,6 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { ID } from 'src/common/types/type';
 import { RegisterDto } from '../auth/dto/auth.dto';
-import { UpdateCategoryDto } from '../category/dto/update-category.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 export class UserRepository {
@@ -12,7 +11,7 @@ export class UserRepository {
   ) {}
 
   async create(dto: RegisterDto): Promise<UserEntity | undefined> {
-    return await this.repository.create(dto);
+    return await this.repository.save(dto);
   }
 
   async update(id: ID, dto: UpdateUserDto): Promise<UserEntity> {

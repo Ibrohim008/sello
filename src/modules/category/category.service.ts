@@ -1,26 +1,65 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { CategoryRepository } from './category.repository';
+import { ResData } from 'src/lib/resData';
+import { ID } from 'src/common/types/type';
+import { CategoryNotFoundException } from './exception/category.exception';
 
 @Injectable()
 export class CategoryService {
-  create(createCategoryDto: CreateCategoryDto) {
-    return 'This action adds a new category';
+  constructor(
+    @Inject('ICategoryRepository')
+    private readonly repository: CategoryRepository,
+  ) {}
+
+  async create(createCategoryDto: CreateCategoryDto) {
+    const category = await this.repository.create(createCategoryDto);
+
+    const resData = new ResData(
+      'Created Successfully',
+      HttpStatus.CREATED,
+      category,
+    );
+
+    return resData;
   }
 
-  findAll() {
-    return `This action returns all category`;
+  async findAll() {
+    return await this.repository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} category`;
+  async findOne(id: number) {
+    return await this.repository.findOneById(id);
   }
 
-  update(id: number, updateCategoryDto: UpdateCategoryDto) {
-    return `This action updates a #${id} category`;
+  async update(id: ID, updateCategoryDto: UpdateCategoryDto) {
+    const foundCategory = await this.findOne(id);
+
+    if (!foundCategory) {
+      throw new CategoryNotFoundException();
+    }
+
+    const updatedCategory = Object.assign(foundCategory, updateCategoryDto);
+
+    const data = await this.repository.update(updatedCategory);
+
+    const resData = new ResData('Updated Category', HttpStatus.OK, data);
+
+    return resData;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} category`;
+  async remove(id: number) {
+    const foundCategory = await this.findOne(id);
+
+    if (!foundCategory) {
+      throw new CategoryNotFoundException();
+    }
+
+    const data = await this.repository.delete(foundCategory);
+
+    const resData = new ResData('Category deleted', HttpStatus.OK, data);
+
+    return resData;
   }
 }
