@@ -1,4 +1,5 @@
 import { BaseEntity } from 'src/common/database/base.entity';
+
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
