@@ -4,20 +4,26 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './category.repository';
 import { ResData } from 'src/lib/resData';
 import { ID } from 'src/common/types/type';
-import { CategoryNotFoundException } from './exception/category.exception';
+import {
+  
+  CategoryNotFoundException,
+} from './exception/category.exception';
+import { ICategoryService } from './interfaces/category.service';
+import { CategoryEntity } from './entities/category.entity';
 
 @Injectable()
-export class CategoryService {
+export class CategoryService implements ICategoryService {
   constructor(
     @Inject('ICategoryRepository')
     private readonly repository: CategoryRepository,
   ) {}
 
   async create(createCategoryDto: CreateCategoryDto) {
-    const category = await this.repository.create(createCategoryDto);
+    const entity = await this.repository.createEntity(createCategoryDto);
+    const category = await this.repository.create(entity);
 
     const resData = new ResData(
-      'Created Successfully',
+      'Created successfully',
       HttpStatus.CREATED,
       category,
     );
@@ -26,31 +32,37 @@ export class CategoryService {
   }
 
   async findAll() {
-    return await this.repository.findAll();
+    const data = await this.repository.findAll();
+
+    return new ResData('Found successfully', HttpStatus.OK, data);
   }
 
   async findOne(id: number) {
-    return await this.repository.findOneById(id);
-  }
+    const data = await this.repository.findOneById(id);
 
-  async update(id: ID, updateCategoryDto: UpdateCategoryDto) {
-    const foundCategory = await this.findOne(id);
-
-    if (!foundCategory) {
+    if (!data) {
       throw new CategoryNotFoundException();
     }
 
-    const updatedCategory = Object.assign(foundCategory, updateCategoryDto);
+    return new ResData('Found successfully', HttpStatus.OK, data);
+  }
+
+  async update(id: ID, updateCategoryDto: UpdateCategoryDto) {
+    const { data: foundCategory } = await this.findOne(id);
+
+    const entity = await this.repository.createEntity(updateCategoryDto);
+    
+    const updatedCategory = Object.assign(foundCategory, entity);
 
     const data = await this.repository.update(updatedCategory);
 
-    const resData = new ResData('Updated Category', HttpStatus.OK, data);
+    const resData = new ResData('Updated successfully', HttpStatus.OK, data);
 
     return resData;
   }
 
-  async remove(id: number) {
-    const foundCategory = await this.findOne(id);
+  async remove(id: number): Promise<ResData<CategoryEntity>> {
+    const { data: foundCategory } = await this.findOne(id);
 
     if (!foundCategory) {
       throw new CategoryNotFoundException();
@@ -58,7 +70,7 @@ export class CategoryService {
 
     const data = await this.repository.delete(foundCategory);
 
-    const resData = new ResData('Category deleted', HttpStatus.OK, data);
+    const resData = new ResData('Deleted successfully', HttpStatus.OK, data);
 
     return resData;
   }

@@ -15,21 +15,25 @@ export class ProductService {
     @Inject('IProductRepository')
     private readonly repository: ProductRepository,
     @Inject('CACHE_MANAGER') private cacheManager: Cache,
+    // @Inject('ICategoryService') private readonly categoryRepository: ICategoryService
   ) {}
 
-  async create(createProductDto: CreateProductDto) {
-    const data = await this.repository.create(createProductDto);
+  // async create(createProductDto: CreateProductDto) {
+  // //  const {data: foundCategoryById} = 
+   
+   
+  //   const data = await this.repository.create(createProductDto);
 
-    await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+  //   await this.deleteDataInRedis(RedisKeys.ALL_USERS);
 
-    const resData = new ResData(
-      'Created Successfully',
-      HttpStatus.CREATED,
-      data,
-    );
+  //   const resData = new ResData(
+  //     'Created Successfully',
+  //     HttpStatus.CREATED,
+  //     data,
+  //   );
 
-    return resData;
-  }
+  //   return resData;
+  // }
 
   async findAll() {
     return await this.repository.findAll();

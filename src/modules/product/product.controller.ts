@@ -26,11 +26,11 @@ export class ProductController {
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+    // return this.productService.create(createProductDto);
   }
 
   @UseInterceptors(CacheInterceptor)
-  @CacheKey(RedisKeys.ALL_USERS)
+  @CacheKey(RedisKeys.All_PRODUCTS)
   @CacheTTL(0)
   @Get()
   findAll() {

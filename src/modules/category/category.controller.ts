@@ -7,21 +7,36 @@ import {
   Param,
   Delete,
   Inject,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { CategoryAlreadyExistException } from './exception/category.exception';
+import { ICategoryRepository } from './interfaces/category.repository';
+import { ICategoryService } from './interfaces/category.service';
+import { ID } from 'src/common/types/type';
 
 @ApiTags('Category')
 @Controller('category')
 export class CategoryController {
   constructor(
     @Inject('ICategoryService')
-    private readonly categoryService: CategoryService) {}
+    private readonly categoryService: ICategoryService,
+    @Inject('ICategoryRepository')
+    private readonly categoryRepository: ICategoryRepository,
+  ) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
+  async create(@Body() createCategoryDto: CreateCategoryDto) {
+    const foundByName = await this.categoryRepository.findOneByName(
+      createCategoryDto.name,
+    );
+
+    if (foundByName.length) {
+      throw new CategoryAlreadyExistException();
+    }
+
     return this.categoryService.create(createCategoryDto);
   }
 
@@ -31,20 +46,28 @@ export class CategoryController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: ID) {
+    return this.categoryService.findOne(id);
   }
 
   @Patch(':id')
-  update(
-    @Param('id') id: string,
+  async update(
+    @Param('id', ParseIntPipe) id: ID,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
-    return this.categoryService.update(+id, updateCategoryDto);
+    const foundByName = await this.categoryRepository.findOneByName(
+      updateCategoryDto.name,
+    );
+
+    if (foundByName.length) {
+      throw new CategoryAlreadyExistException();
+    }
+
+    return this.categoryService.update(id, updateCategoryDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: ID) {
+    return this.categoryService.remove(id);
   }
 }

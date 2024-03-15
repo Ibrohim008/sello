@@ -11,3 +11,4 @@ export class CategoryNotFoundException extends HttpException {
     super('Category not found ', HttpStatus.NOT_FOUND);
   }
 }
+

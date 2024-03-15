@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { ID } from 'src/common/types/type';
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
 import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
@@ -17,8 +17,9 @@ export class CreateProductDto {
     type: String,
   })
   @IsString()
+  @IsOptional()
   description: string;
-
+  
   @ApiProperty({
     type: Number,
   })
@@ -34,14 +35,5 @@ export class CreateProductDto {
   @ApiProperty({ type: Number })
   @IsNumber()
   @IsNotEmpty()
-  category: CategoryEntity;
-
-  createdBy: UserEntity;
-
-  lastEditedBy: UserEntity;
-
-  transactions: Array<TransactionEntity>;
-  lastUpdateAt: Date;
-  createdAt: Date;
-  id: ID;
+  categoryId: CategoryEntity;
 }
