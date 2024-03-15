@@ -31,7 +31,7 @@ export class CategoryRepository implements ICategoryRepository {
   }
 
   async findAll(): Promise<Array<CategoryEntity>> {
-    return await this.repository.find();
+    return await this.repository.find({ relations: ['products'] });
   }
 
   async findOneByName(name: string): Promise<Array<CategoryEntity>> {

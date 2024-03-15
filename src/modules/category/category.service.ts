@@ -4,10 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from './category.repository';
 import { ResData } from 'src/lib/resData';
 import { ID } from 'src/common/types/type';
-import {
-  
-  CategoryNotFoundException,
-} from './exception/category.exception';
+import { CategoryNotFoundException } from './exception/category.exception';
 import { ICategoryService } from './interfaces/category.service';
 import { CategoryEntity } from './entities/category.entity';
 
@@ -51,7 +48,7 @@ export class CategoryService implements ICategoryService {
     const { data: foundCategory } = await this.findOne(id);
 
     const entity = await this.repository.createEntity(updateCategoryDto);
-    
+
     const updatedCategory = Object.assign(foundCategory, entity);
 
     const data = await this.repository.update(updatedCategory);
