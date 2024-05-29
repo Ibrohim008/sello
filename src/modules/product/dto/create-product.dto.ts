@@ -1,8 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { ID } from 'src/common/types/type';
 import { CategoryEntity } from 'src/modules/category/entities/category.entity';
-import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 
 export class CreateProductDto {
@@ -11,15 +9,15 @@ export class CreateProductDto {
   })
   @IsString()
   @IsNotEmpty()
-  title: string;
+  brand: string;
 
   @ApiProperty({
-    type: String,
+    type: Number,
   })
-  @IsString()
-  @IsOptional()
-  description: string;
-  
+  @IsNumber()
+  @IsNotEmpty()
+  seller: UserEntity;
+
   @ApiProperty({
     type: Number,
   })
@@ -35,5 +33,5 @@ export class CreateProductDto {
   @ApiProperty({ type: Number })
   @IsNumber()
   @IsNotEmpty()
-  categoryId: CategoryEntity;
+  category: CategoryEntity;
 }

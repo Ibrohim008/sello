@@ -1,5 +1,6 @@
 import { BaseEntity } from 'src/common/database/base.entity';
 import { RoleEnum } from 'src/common/enums/enum';
+import { ProductEntity } from 'src/modules/product/entities/product.entity';
 import { TransactionEntity } from 'src/modules/transaction/entities/transaction.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 
@@ -22,4 +23,7 @@ export class UserEntity extends BaseEntity {
     (transactionEntity) => transactionEntity.user,
   )
   transactions: Array<TransactionEntity>;
+
+  @OneToMany(() => ProductEntity, (productEntity) => productEntity.seller)
+  products: Array<ProductEntity>;
 }

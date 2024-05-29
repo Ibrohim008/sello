@@ -8,59 +8,63 @@ import { ProductNotFoundException } from './exception/product.exception';
 import { RedisKeys } from 'src/common/enums/enum';
 import { Cache } from 'cache-manager';
 import { ProductEntity } from './entities/product.entity';
+import { IProductService } from './interfaces/product.service';
+import { ICategoryService } from '../category/interfaces/category.service';
 
 @Injectable()
-export class ProductService {
+export class ProductService implements IProductService {
   constructor(
     @Inject('IProductRepository')
     private readonly repository: ProductRepository,
     @Inject('CACHE_MANAGER') private cacheManager: Cache,
-    // @Inject('ICategoryService') private readonly categoryRepository: ICategoryService
+    @Inject('ICategoryService')
+    private readonly categoryService: ICategoryService,
   ) {}
+  async create(
+    createProductDto: CreateProductDto,
+  ): Promise<ResData<ProductEntity>> {
+    await this.categoryService.findOne(+createProductDto.category);
 
-  // async create(createProductDto: CreateProductDto) {
-  // //  const {data: foundCategoryById} = 
-   
-   
-  //   const data = await this.repository.create(createProductDto);
+    const entity = await this.repository.createEntity(createProductDto);
 
-  //   await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+    const data = await this.repository.create(entity);
 
-  //   const resData = new ResData(
-  //     'Created Successfully',
-  //     HttpStatus.CREATED,
-  //     data,
-  //   );
-
-  //   return resData;
-  // }
-
-  async findAll() {
-    return await this.repository.findAll();
+    return new ResData('Created successfully', HttpStatus.CREATED, data);
   }
 
-  async findOne(id: number) {
+  async findAll(): Promise<ResData<Array<ProductEntity>>> {
+    const data = await this.repository.findAll();
+
+    return new ResData('Found successfully', HttpStatus.OK, data);
+  }
+
+  async findOne(id: ID): Promise<ResData<ProductEntity | undefined>> {
     const data = await this.repository.findOneById(id);
 
     if (!data) {
       throw new ProductNotFoundException();
     }
 
-    const resData = new ResData('product found', HttpStatus.OK, data);
-
-    return resData;
+    return new ResData('Found successfully', HttpStatus.OK, data);
   }
 
-  async update(id: ID, updateProductDto: UpdateProductDto) {
+  async update(
+    id: ID,
+    updateProductDto: UpdateProductDto,
+  ): Promise<ResData<ProductEntity>> {
     const { data: foundProduct } = await this.findOne(id);
 
     const updatedProduct = Object.assign(foundProduct, updateProductDto);
 
+    console.log(updateProductDto);
+
+    // const entity = await this.repository.create(updateProductDto)
+
     const data = await this.repository.update(updatedProduct);
 
-    await this.deleteDataInRedis(RedisKeys.ALL_USERS);
+    await this.deleteDataInRedis(RedisKeys.All_PRODUCTS);
 
-    const resData = new ResData('Updated Product', HttpStatus.OK, data);
+    const resData = new ResData('Updated successfully', HttpStatus.OK, data);
 
     return resData;
   }

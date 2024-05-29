@@ -55,6 +55,7 @@ export class CategoryController {
     @Param('id', ParseIntPipe) id: ID,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ) {
+    
     const foundByName = await this.categoryRepository.findOneByName(
       updateCategoryDto.name,
     );

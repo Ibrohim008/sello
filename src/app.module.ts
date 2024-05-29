@@ -11,6 +11,8 @@ import { ProductEntity } from './modules/product/entities/product.entity';
 import { TransactionEntity } from './modules/transaction/entities/transaction.entity';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { FileModule } from './modules/file/file.module';
+import { FileEntity } from './modules/file/entities/file.entity';
 
 @Module({
   imports: [
@@ -32,7 +34,13 @@ import { redisStore } from 'cache-manager-redis-yet';
       username: 'postgres',
       password: '2004',
       database: 'product_typeorm',
-      entities: [UserEntity, CategoryEntity, ProductEntity, TransactionEntity],
+      entities: [
+        UserEntity,
+        CategoryEntity,
+        ProductEntity,
+        TransactionEntity,
+        FileEntity,
+      ],
       synchronize: true,
     }),
     AuthModule,
@@ -40,6 +48,7 @@ import { redisStore } from 'cache-manager-redis-yet';
     ProductModule,
     TransactionModule,
     UserModule,
+    FileModule,
   ],
 })
 export class AppModule {}

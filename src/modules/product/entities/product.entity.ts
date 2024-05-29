@@ -8,10 +8,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 @Entity('products')
 export class ProductEntity extends BaseEntity {
   @Column({ name: 'title', type: 'varchar', length: 256, nullable: false })
-  title: string;
+  brand: string;
 
-  @Column({ type: 'varchar', length: 256, nullable: true })
-  description: string;
+  @ManyToOne(() => UserEntity, (userEntity) => userEntity.products)
+  seller: UserEntity;
 
   @Column({ type: 'bigint', nullable: false, default: 0 })
   price: number;

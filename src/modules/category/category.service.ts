@@ -34,7 +34,7 @@ export class CategoryService implements ICategoryService {
     return new ResData('Found successfully', HttpStatus.OK, data);
   }
 
-  async findOne(id: number) {
+  async findOne(id: ID) {
     const data = await this.repository.findOneById(id);
 
     if (!data) {
